@@ -3,9 +3,7 @@ package com.example.android.baking.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by berso on 8/21/17.
- */
+//Created by berso on 8/17/17.
 
 public class Ingredient implements Parcelable{
     private String mIngredient;
@@ -20,7 +18,7 @@ public class Ingredient implements Parcelable{
         mQuantity   = quantity;
     }
 
-    protected Ingredient(Parcel in) {
+    private Ingredient(Parcel in) {
         mIngredient = in.readString();
         mMeasure = in.readString();
         mQuantity = in.readInt();

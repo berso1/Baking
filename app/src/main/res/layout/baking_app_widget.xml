@@ -8,6 +8,7 @@
     android:id="@+id/widget_baking_image"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:contentDescription="@string/baking_app_widget_image_view"
     android:src="@drawable/ic_cake"/>
 
 </RelativeLayout>

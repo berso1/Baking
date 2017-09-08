@@ -8,7 +8,7 @@
     <ListView
         android:id="@+id/listViewWidget"
         android:layout_width="@dimen/app_bar_width"
-        android:layout_height="@dimen/widget_heigth" />
+        android:layout_height="@dimen/widget_height" />
 
     <!-- Empty view is show if list items are empty -->
     <TextView

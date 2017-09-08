@@ -17,8 +17,8 @@ import com.example.android.baking.UI.RecipeDetailActivity;
 public class BakingWidgetProvider extends AppWidgetProvider {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
         RemoteViews rv;
         rv = getBakingGridRemoteView(context);
         appWidgetManager.updateAppWidget(appWidgetId, rv);
@@ -49,10 +49,8 @@ public class BakingWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        BakingIngredientService.startActionShowIngredients(context,0);
+        BakingIngredientService.startActionShowIngredients(context);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-
-
     }
 
     @Override

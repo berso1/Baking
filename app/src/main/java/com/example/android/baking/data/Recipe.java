@@ -5,9 +5,8 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-/**
- * Created by berso on 8/19/17.
- */
+//Created by berso on 8/17/17.
+
 
 public class Recipe implements Parcelable {
 
@@ -33,7 +32,7 @@ public class Recipe implements Parcelable {
             mImage = image;
         }
 
-    protected Recipe(Parcel in) {
+    private Recipe(Parcel in) {
         mId = in.readInt();
         mName = in.readString();
         mIngredients = in.createTypedArrayList(Ingredient.CREATOR);

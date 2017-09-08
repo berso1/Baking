@@ -49,7 +49,7 @@ import butterknife.ButterKnife;
 public class RecipeStepFragment extends Fragment {
     private static final String LOGTAG = "RecipeStepFragment";
 
-//INTERFASE=========================================================================================
+//INTERFACE=========================================================================================
 
     public interface OnChangeStepListener {
         void OnChangeStep(int position);
@@ -59,17 +59,16 @@ public class RecipeStepFragment extends Fragment {
 
     public static final String ARG_ITEM = "item_type";
     private OnChangeStepListener mListener;
-    int position;
+    private int position;
     private boolean mTwoPane;
 
     private String mItem;
     private Recipe currentRecipe;
     private Step currentStep;
-    private View rootView;
-    SimpleExoPlayer mExoPlayer;
-    Uri mVideoUri;
+    private SimpleExoPlayer mExoPlayer;
+    private Uri mVideoUri;
 
-    //referece layout objects using Butteknife
+    //reference layout objects using Butteknife
     @BindView(R.id.item_detail) TextView mTextView;
     @BindView(R.id.playerView) SimpleExoPlayerView mPlayerView;
     @BindView(R.id.my_toolbar) Toolbar mToolBar;
@@ -92,11 +91,12 @@ public class RecipeStepFragment extends Fragment {
     }
 
 //ON CREATE VIEW====================================================================================
+    @SuppressWarnings("deprecation")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
-        ButterKnife.bind(this,rootView);
+        View rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
+        ButterKnife.bind(this, rootView);
         try {
             ((AppCompatActivity) getActivity()).setSupportActionBar(mToolBar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);

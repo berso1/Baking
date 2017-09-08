@@ -14,9 +14,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by berso on 8/17/17.
- */
+//Created by berso on 8/17/17.
+
 
 public class BakingUtils {
 
@@ -30,13 +29,14 @@ public class BakingUtils {
 
     //Read recipes.json file from assets folder return a List of recipe
     public static List<Recipe> fetchRecipeData(Context context) {
-        String jsonResponse = null;
+        String jsonResponse;
         jsonResponse = readRecipesFromJson(context);
         return extractFeatureFromJson(jsonResponse,context);
     }
 
-    public static String readRecipesFromJson(Context context) {
-        String json = null;
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static String readRecipesFromJson(Context context) {
+        String json;
         try {
             InputStream is = context.getAssets().open("recipes.json");
             int size = is.available();
@@ -83,7 +83,7 @@ public class BakingUtils {
 
     private static List<Ingredient> getIngredientList(JSONArray array) throws JSONException {
         if(array==null) return null;
-        List<Ingredient> ingredientList = new ArrayList<Ingredient>();
+        List<Ingredient> ingredientList = new ArrayList<>();
         try {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject thisIngredient = array.getJSONObject(i);
@@ -102,7 +102,7 @@ public class BakingUtils {
 
     private static List<Step> getSteps(JSONArray array) throws JSONException {
         if(array == null) return null;
-        List<Step> stepList = new ArrayList<Step>();
+        List<Step> stepList = new ArrayList<>();
         try{
             for(int i = 0; i < array.length() ; i++) {
                 JSONObject thisStep         = array.getJSONObject(i);
@@ -122,7 +122,7 @@ public class BakingUtils {
         return stepList;
     }
 
-    //method to calculate numver of columns
+    //method to calculate # of columns
     public static int calculateNoOfColumns(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;

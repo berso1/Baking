@@ -39,12 +39,13 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         return new ViewHolder(view);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Recipe recipe = mRecipes.get(position);
         String imageUrl = recipe.getmImage();
         //if recipe have an imageUrl, loads it
-        if(imageUrl.equals("") || imageUrl == null){
+        if(imageUrl.equals("")){
             holder.mImageView.setImageResource(R.drawable.ic_cake);
         }else {
             Picasso.with(mContext).load(imageUrl)

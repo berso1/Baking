@@ -3,9 +3,7 @@ package com.example.android.baking.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by berso on 8/21/17.
- */
+//Created by berso on 8/17/17.
 
 public class Step implements Parcelable {
 
@@ -27,7 +25,7 @@ public class Step implements Parcelable {
         this.thumbNailUrl = thumbNailUrl;
     }
 
-    protected Step(Parcel in) {
+    private Step(Parcel in) {
         id = in.readInt();
         shortDescription = in.readString();
         description = in.readString();

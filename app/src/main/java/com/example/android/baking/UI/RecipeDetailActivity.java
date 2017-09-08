@@ -75,7 +75,7 @@ public class RecipeDetailActivity extends AppCompatActivity
     }
 
 
-    //interfaces to step or ingrediets methods
+    //interfaces to step or ingredients methods
     @Override
     public void OnChangeStep(int position) {
         if(position == -1){

@@ -26,10 +26,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-//Fragment to show a list of ingredients for the selectd recipe
+//Fragment to show a list of ingredients for the selected recipe
 public class RecipeIngredientsFragment extends Fragment {
 
-//INTERFASE=========================================================================================
+//INTERFACE=========================================================================================
 
     public interface OnChangeIngredientsListener {
         void OnChangeIngredient(int position);
@@ -40,7 +40,6 @@ public class RecipeIngredientsFragment extends Fragment {
     public static final String ARG_ITEM = "item_type";
     private static final String LOG_TAG = "RecipeStepFragment";
     private OnChangeIngredientsListener mListener;
-    int position;
 
     private String mItem;
 
@@ -49,7 +48,7 @@ public class RecipeIngredientsFragment extends Fragment {
     private boolean mTwoPane;
 
 
-    //referece layout objects using Butteknife
+    //reference layout objects using Butteknife
     @BindView(R.id.item_detail) TextView mTextView;
     @BindView(R.id.playerView) SimpleExoPlayerView mPlayerView;
     @BindView(R.id.my_toolbar) Toolbar mToolBar;
@@ -89,6 +88,7 @@ public class RecipeIngredientsFragment extends Fragment {
         }
         if(mToolBar != null) {
             mToolBar.setTitle(mItem);
+            //noinspection deprecation
             mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
         }
         setHasOptionsMenu(true);
@@ -99,7 +99,7 @@ public class RecipeIngredientsFragment extends Fragment {
 
     //load the list of ingredients to the fragment layout
     private void setIngredients() {
-        position=-1;
+        int position = -1;
         List<Ingredient> ingredients = currentRecipe.getmIngredients();
         String ingredientList = "INGREDIENTS: \n\n";
         for(int i = 0; i< ingredients.size(); i++){
@@ -151,6 +151,7 @@ public class RecipeIngredientsFragment extends Fragment {
             mListener = (RecipeIngredientsFragment.OnChangeIngredientsListener) context;
             if(mToolBar != null) {
                 mToolBar.setTitle(mItem);
+                //noinspection deprecation
                 mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
             }
         } else {

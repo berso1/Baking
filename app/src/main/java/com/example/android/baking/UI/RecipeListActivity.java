@@ -35,10 +35,9 @@ public class RecipeListActivity extends AppCompatActivity
 //GLOBAL VARIABLES==================================================================================
     public static final String INGREDIENTS_TITLE = "INGREDIENTS";
     private boolean mTwoPane;
-    Recipe currentRecipe;
-    List<String> mList;
-    List<Step> mSteps;
-    ActionBar actionBar;
+    private Recipe currentRecipe;
+    private List<Step> mSteps;
+    private ActionBar actionBar;
     @BindView(R.id.list_toolbar) Toolbar mToolBar;
 
 
@@ -62,11 +61,11 @@ public class RecipeListActivity extends AppCompatActivity
 
         List<Ingredient> ingredients = currentRecipe.getmIngredients();
         mSteps = currentRecipe.getmSteps();
-        mList = setList(ingredients,mSteps);
+        List<String> mList = setList(ingredients, mSteps);
 
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView,mList);
+        setupRecyclerView((RecyclerView) recyclerView, mList);
 
         if (findViewById(R.id.recipe_detail_fragment_container) != null) {
             mTwoPane = true;
@@ -173,6 +172,7 @@ public class RecipeListActivity extends AppCompatActivity
 
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             final int mPosition = position;
@@ -180,7 +180,7 @@ public class RecipeListActivity extends AppCompatActivity
             if(position>0) {
                 step = mSteps.get(position - 1);
                 String imageUrl = step.getThumbNailUrl();
-                if(imageUrl.equals("") || imageUrl == null){
+                if(imageUrl.equals("")){
                     holder.mStepImage.setImageResource(R.drawable.ic_cake);
                 }else {
                     Picasso.with(getApplicationContext()).load(imageUrl)
