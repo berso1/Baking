@@ -12,12 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.baking.R;
 import com.example.android.baking.data.Ingredient;
 import com.example.android.baking.data.Recipe;
 import com.example.android.baking.data.Step;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * An activity representing a list of Items. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link RecipeDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
+//Activity to load the step list or step list and step detail in w900dp
 public class RecipeListActivity extends AppCompatActivity
         implements RecipeStepFragment.OnChangeStepListener,
                    RecipeIngredientsFragment.OnChangeIngredientsListener{
@@ -56,7 +51,7 @@ public class RecipeListActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
 
-        // Check for savedInstanceState currentMovie
+        // Check for savedInstanceState currentRecipe
         if(savedInstanceState == null || !savedInstanceState.containsKey("currentRecipe")) {
             Intent intent = getIntent();
             currentRecipe = intent.getExtras().getParcelable("currentRecipe");
@@ -74,15 +69,10 @@ public class RecipeListActivity extends AppCompatActivity
         setupRecyclerView((RecyclerView) recyclerView,mList);
 
         if (findViewById(R.id.recipe_detail_fragment_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             mTwoPane = true;
         }
 
         actionBar = getSupportActionBar();
-
         // Show the Up button in the action bar.
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -188,11 +178,21 @@ public class RecipeListActivity extends AppCompatActivity
             final int mPosition = position;
             Step step = null;
             if(position>0) {
-                 step = mSteps.get(position - 1);
+                step = mSteps.get(position - 1);
+                String imageUrl = step.getThumbNailUrl();
+                if(imageUrl.equals("") || imageUrl == null){
+                    holder.mStepImage.setImageResource(R.drawable.ic_cake);
+                }else {
+                    Picasso.with(getApplicationContext()).load(imageUrl)
+                            .placeholder(getApplicationContext().getResources().getDrawable(R.drawable.ic_cake))
+                            .error(getApplicationContext().getResources().getDrawable(R.drawable.ic_cake))
+                            .into(holder.mStepImage);
+                }
             }
             final Step currentStep = step;
-            holder.mItem.setText(mList.get(position));
-            holder.mItem.setOnClickListener(new View.OnClickListener() {
+
+            holder.mStepTextView.setText(mList.get(position));
+            holder.mStepTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
@@ -236,7 +236,8 @@ public class RecipeListActivity extends AppCompatActivity
 //VIEWHOLDER========================================================================================
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.step) TextView mItem;
+            @BindView(R.id.step) TextView mStepTextView;
+            @BindView(R.id.step_image) ImageView mStepImage;
 
             public ViewHolder(View view) {
                 super(view);
@@ -245,7 +246,7 @@ public class RecipeListActivity extends AppCompatActivity
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mItem.getText() + "'";
+                return super.toString() + " '" + mStepTextView.getText() + "'";
             }
         }
     }

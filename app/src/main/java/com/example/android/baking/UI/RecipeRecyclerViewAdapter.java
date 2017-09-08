@@ -1,5 +1,6 @@
 package com.example.android.baking.UI;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.android.baking.R;
 import com.example.android.baking.data.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,10 +22,14 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     private final List<Recipe> mRecipes;
     private final RecipeFragment.OnListFragmentInteractionListener mListener;
+    private Context mContext;
 
-    public RecipeRecyclerViewAdapter(List<Recipe> recipes, RecipeFragment.OnListFragmentInteractionListener listener) {
+    public RecipeRecyclerViewAdapter(List<Recipe> recipes,
+                                     RecipeFragment.OnListFragmentInteractionListener listener,
+                                     Context context) {
         mRecipes = recipes;
         mListener = listener;
+        mContext = context;
     }
 
     @Override
@@ -36,10 +42,18 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Recipe recipe = mRecipes.get(position);
-      //  holder.mItem = mRecipes.get(position);
-        holder.mImageView.setImageResource(R.drawable.ic_cake);
+        String imageUrl = recipe.getmImage();
+        //if recipe have an imageUrl, loads it
+        if(imageUrl.equals("") || imageUrl == null){
+            holder.mImageView.setImageResource(R.drawable.ic_cake);
+        }else {
+            Picasso.with(mContext).load(imageUrl)
+                    .placeholder(mContext.getResources().getDrawable(R.drawable.ic_cake))
+                    .error(mContext.getResources().getDrawable(R.drawable.ic_cake))
+                    .into(holder.mImageView);
+        }
         holder.mName.setText(recipe.getmName());
-        holder.mServings.setText(""+recipe.getmServings());
+        holder.mServings.setText(mContext.getString(R.string.servings, ""+recipe.getmServings()));
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +72,8 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         return mRecipes.size();
     }
 
+
+//VIEW HOLDER ======================================================================================
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.card_view) View mView;
         @BindView(R.id.recipe_image) ImageView mImageView;

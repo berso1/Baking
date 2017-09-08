@@ -47,6 +47,7 @@ public class Ingredient implements Parcelable{
     }
 
     public int getmQuantity() {
+        if(mQuantity == 0) mQuantity =1;
         return mQuantity;
     }
 

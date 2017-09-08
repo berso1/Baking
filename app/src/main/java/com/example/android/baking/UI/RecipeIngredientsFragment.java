@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.baking.R;
 import com.example.android.baking.data.Ingredient;
@@ -26,14 +25,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link RecipeListActivity}
- * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
- * on handsets.
- */
 
-
+//Fragment to show a list of ingredients for the selectd recipe
 public class RecipeIngredientsFragment extends Fragment {
 
 //INTERFASE=========================================================================================
@@ -104,48 +97,31 @@ public class RecipeIngredientsFragment extends Fragment {
 
 
 
-//ON ATTACH=========================================================================================
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof RecipeIngredientsFragment.OnChangeIngredientsListener) {
-            mListener = (RecipeIngredientsFragment.OnChangeIngredientsListener) context;
-            if(mToolBar != null) {
-                mToolBar.setTitle(mItem);
-                mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
-            }
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+    //load the list of ingredients to the fragment layout
+    private void setIngredients() {
+        position=-1;
+        List<Ingredient> ingredients = currentRecipe.getmIngredients();
+        String ingredientList = "INGREDIENTS: \n\n";
+        for(int i = 0; i< ingredients.size(); i++){
+            Ingredient currentIngredient = ingredients.get(i);
+            String formedIngredient = currentIngredient.getmIngredient() +": "+
+                    currentIngredient.getmQuantity()+" "+
+                    currentIngredient.getmMeasure();
+            ingredientList = ingredientList+formedIngredient+"\n";
         }
+        ((TextView) rootView.findViewById(R.id.item_detail)).setText(ingredientList);
+        //hide exoplayer
+        mPlayerView.setVisibility(View.GONE);
     }
+
 
 //MENU==============================================================================================
 
-
-    /**
-     * Initialize the contents of the Fragment host's standard options menu.  You
-     * should place your menu items in to <var>menu</var>.  For this method
-     * to be called, you must have first called {@link #setHasOptionsMenu}.  See
-     * {@link Activity#onCreateOptionsMenu(Menu) Activity.onCreateOptionsMenu}
-     * for more information.
-     *
-     * @param menu     The options menu in which you place your items.
-     * @param inflater
-     * @see #setHasOptionsMenu
-     * @see #onPrepareOptionsMenu
-     * @see #onOptionsItemSelected
-     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_detail, menu);
-        //hide the previousButton
-       // MenuItem previousButton = menu.getItem(1);
-       // previousButton.setVisible(false);
     }
 
     @Override
@@ -168,27 +144,20 @@ public class RecipeIngredientsFragment extends Fragment {
 
 
 
-    private void setIngredients() {
-        position=-1;
-        List<Ingredient> ingredients = currentRecipe.getmIngredients();
-        String ingredientList = "INGREDIENTS: \n\n";
-        for(int i = 0; i< ingredients.size(); i++){
-            Ingredient currentIngredient = ingredients.get(i);
-            ingredientList = ingredientList+currentIngredient.getmIngredient()+"\n";
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipeIngredientsFragment.OnChangeIngredientsListener) {
+            mListener = (RecipeIngredientsFragment.OnChangeIngredientsListener) context;
+            if(mToolBar != null) {
+                mToolBar.setTitle(mItem);
+                mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
+            }
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
         }
-        mPlayerView.setVisibility(View.GONE);
-       // mPreviousButton.setVisibility(View.GONE);
-        ((TextView) rootView.findViewById(R.id.item_detail)).setText(ingredientList);
     }
-
-/*
-    //Use interface method OnChangeStep to change to next fragment
-    @OnClick(R.id.next_step_button)
-    public void next_step() {
-        position = 0;
-        mListener.OnChangeIngredient(position);
-    }
-*/
 
     @Override
     public void onStart() {
@@ -214,20 +183,3 @@ public class RecipeIngredientsFragment extends Fragment {
     }
 }
 
-                /*
-                    if (!thumbnailUrl.isEmpty()) {
-                        Picasso
-                                .with(getContext())
-                                .load(thumbnailUrl)
-                                .fit()
-                                .into(mImageView);
-
-                    } else {
-                        Picasso
-                                .with(getContext())
-                                .load(R.drawable.exo_controls_play)
-                                .fit()
-                                .into(mImageView);
-                    }
-                    */
-// }

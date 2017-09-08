@@ -1,6 +1,5 @@
 package com.example.android.baking.UI;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -11,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,15 +44,10 @@ import com.google.android.exoplayer2.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link RecipeListActivity}
- * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
- * on handsets.
- */
 
-
+//fragment to load a selected step detail
 public class RecipeStepFragment extends Fragment {
+    private static final String LOGTAG = "RecipeStepFragment";
 
 //INTERFASE=========================================================================================
 
@@ -84,47 +79,44 @@ public class RecipeStepFragment extends Fragment {
     }
 
 //ON CREATE=========================================================================================
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-        //setHasOptionsMenu(true);
         if (getArguments().containsKey(ARG_ITEM)) {
             mItem = getArguments().getString(ARG_ITEM);
             currentRecipe = getArguments().getParcelable("currentRecipe");
             currentStep = getArguments().getParcelable("currentStep");
             mTwoPane = getArguments().getBoolean("twoPane");
         }
-
     }
 
 //ON CREATE VIEW====================================================================================
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
         ButterKnife.bind(this,rootView);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolBar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if(!mTwoPane) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        try {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolBar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+            if (!mTwoPane) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+        }catch(NullPointerException e){
+            Log.v(LOGTAG,"Action bar error");
         }
         setHasOptionsMenu(true);
         if(mToolBar != null) {
             mToolBar.setTitle(mItem);
             mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
-
         }
         return rootView;
     }
 
 
 //ON ATTACH=========================================================================================
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -137,7 +129,6 @@ public class RecipeStepFragment extends Fragment {
         }
     }
 
-
     private void setStep() {
         position = currentStep.getId();
         mTextView.setText(currentStep.getDescription());
@@ -149,9 +140,7 @@ public class RecipeStepFragment extends Fragment {
         }
     }
 
-
 //MENU==============================================================================================
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -161,7 +150,6 @@ public class RecipeStepFragment extends Fragment {
             menu.getItem(1).setVisible(false);
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -173,8 +161,6 @@ public class RecipeStepFragment extends Fragment {
                         mListener.OnChangeStep(position);
                     } else {
                         item.setVisible(false);
-                        //Toast toast = Toast.makeText(getContext(), "No more steps", Toast.LENGTH_SHORT);
-                       // toast.show();
                     }
 
                 return true;
@@ -197,51 +183,26 @@ public class RecipeStepFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
-//ON ATTACH=========================================================================================
-
-
-
     @Override
     public void onStart() {
         super.onStart();
         if (Util.SDK_INT > 23) {
-            //  Log.v("onStart",""+currentStep.getId());
-      //      ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
-       //     scrollView.smoothScrollBy(0,0);
             setStep();
             initializePlayer(mVideoUri);
         }
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
-        hideSystemUi();
         if ((Util.SDK_INT <= 23 || mPlayerView == null)) {
             setStep();
             initializePlayer(mVideoUri);
         }
     }
 
-
-    @SuppressLint("InlinedApi")
-    private void hideSystemUi() {
-        mPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
-
-
     private void initializePlayer(Uri mediaUri) {
         if(!Uri.EMPTY.equals(mediaUri) && mediaUri != null) {
-           // mPlayerView.setVisibility(View.VISIBLE);
-          //  Toast toast = Toast.makeText(getContext(),"initializePlayer:"+mediaUri.toString()+"|",Toast.LENGTH_SHORT);
-           // toast.show();
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
             TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
@@ -253,12 +214,10 @@ public class RecipeStepFragment extends Fragment {
 
             MediaSource videoSource = new ExtractorMediaSource(mediaUri,
                     dataSourceFactory, extractor, null, null);
-                    //buildMediaSource(mediaUri);//new ExtractorMediaSource(mediaUri, dataSourceFactory, extractor, null, null);
             mExoPlayer.prepare(videoSource);
 
             mExoPlayer.setPlayWhenReady(true);
         }else{
-          //  mPlayerView.setVisibility(View.GONE);
             mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
                     (getResources(), R.drawable.exo_controls_play));
                 Toast toast = Toast.makeText(getContext(), "No Video found", Toast.LENGTH_SHORT);
@@ -266,9 +225,8 @@ public class RecipeStepFragment extends Fragment {
         }
     }
 
-    /**
-     * Release ExoPlayer.
-     */
+    // Release ExoPlayer.
+
     private void releasePlayer() {
         if(mExoPlayer != null) {
             mExoPlayer.stop();
@@ -277,19 +235,12 @@ public class RecipeStepFragment extends Fragment {
         }
     }
 
-    /**
-     * Called when the fragment is no longer in use.  This is called
-     * after {@link #onStop()} and before {@link #onDetach()}.
-     */
+    // Release ExoPlayer.
     @Override
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
     }
-
-
-
-
 
     @Override
     public void onDetach() {
@@ -298,20 +249,3 @@ public class RecipeStepFragment extends Fragment {
     }
 }
 
-                /*
-                    if (!thumbnailUrl.isEmpty()) {
-                        Picasso
-                                .with(getContext())
-                                .load(thumbnailUrl)
-                                .fit()
-                                .into(mImageView);
-
-                    } else {
-                        Picasso
-                                .with(getContext())
-                                .load(R.drawable.exo_controls_play)
-                                .fit()
-                                .into(mImageView);
-                    }
-                    */
-// }

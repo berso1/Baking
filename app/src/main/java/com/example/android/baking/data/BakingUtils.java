@@ -2,6 +2,7 @@ package com.example.android.baking.data;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -22,10 +23,12 @@ public class BakingUtils {
     private static final String LOG_TAG = BakingUtils.class.getName();
     private static final String URL_PRE_STRING = "http://image.tmdb.org/t/p/w185/";
 
-    private BakingUtils() { // Do not remove
+    //empty constructor to avoid class to be instantiated
+
+    private BakingUtils() {
     }
 
-    //Read recipes.json file from assets folder
+    //Read recipes.json file from assets folder return a List of recipe
     public static List<Recipe> fetchRecipeData(Context context) {
         String jsonResponse = null;
         jsonResponse = readRecipesFromJson(context);
@@ -55,8 +58,6 @@ public class BakingUtils {
         }
         List<Recipe> recipes = new ArrayList<>();
         try {
-            // JSONObject baseJsonResponse = new JSONObject(recipeJson);
-            // JSONArray results = baseJsonResponse.getJSONArray("results");
             JSONArray results = new JSONArray(recipeJson);
 
             for (int i = 0; i < results.length(); i++) {
@@ -90,14 +91,11 @@ public class BakingUtils {
                 String     measure        = thisIngredient.getString("measure");
                 int        quantity       = thisIngredient.getInt("quantity");
                 Ingredient _Ingredient    = new Ingredient(ingredient,measure,quantity);
-
-                if(_Ingredient != null) {
-                    ingredientList.add(_Ingredient);
-                }
+                ingredientList.add(_Ingredient);
             }
 
         }catch (JSONException e){
-
+            Log.v(LOG_TAG," extractIngredientsFromJson "+e.toString());
         }
         return ingredientList;
     }
@@ -118,12 +116,24 @@ public class BakingUtils {
                 stepList.add(_step);
             }
         }catch (JSONException e){
+            Log.v(LOG_TAG," extractStepsFromJson "+e.toString());
 
         }
         return stepList;
     }
 
+    //method to calculate numver of columns
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return (int) dpWidth / 300;
+    }
+
 }
+
+
+
+
 //FIN==================================================================================================
 
 

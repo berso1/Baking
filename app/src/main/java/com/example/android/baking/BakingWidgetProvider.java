@@ -10,42 +10,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.example.android.baking.UI.MainActivity;
 import com.example.android.baking.UI.RecipeDetailActivity;
 
-/**
- * Implementation of App Widget functionality.
- */
-public class BakingWidgetProvider extends AppWidgetProvider {
+// Implementation of App Widget functionality.
 
+public class BakingWidgetProvider extends AppWidgetProvider {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
-        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
-        int width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
         RemoteViews rv;
-        if (width < 200) {
-            rv = getImageRemoteView(context,appWidgetId);
-        } else {
-            rv = getBakingGridRemoteView(context);
-        }
-
         rv = getBakingGridRemoteView(context);
         appWidgetManager.updateAppWidget(appWidgetId, rv);
     }
-
-
-
-    private static RemoteViews getImageRemoteView(Context context, int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.widget_baking_image, pendingIntent);
-        return views;
-    }
-
 
     private static RemoteViews getBakingGridRemoteView(Context context) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list_view);
@@ -53,29 +30,13 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, ListWidgetService.class);
         views.setRemoteAdapter(R.id.listViewWidget,intent);
 
-/*
-        Intent appIntent = new Intent(context, RecipeDetailActivity.class);
-        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.listViewWidget, appPendingIntent);
-*/
-
-// Set the PlantDetailActivity intent to launch when clicked
         Intent appIntent = new Intent(context, RecipeDetailActivity.class);
         PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.listViewWidget, appPendingIntent);
-        // Handle empty gardens
+        // Handle empty list
         views.setEmptyView(R.id.listViewWidget, R.id.empty_view);
 
         return views;
-    }
-
-
-
-    public static void updateBakingWidgets(Context context, AppWidgetManager appWidgetManager,
-                                           int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
     }
 
     @Override

@@ -17,30 +17,21 @@ import com.example.android.baking.data.Recipe;
 
 import java.util.List;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
+//Fragment to show a list of recipes as cards in a recyclerview load in Main Activity
 public class RecipeFragment extends Fragment  {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
+    private int mColumnCount;
     private OnListFragmentInteractionListener mListener;
 
     // Mandatory empty constructor for the fragment manager to instantiate the
-
     public RecipeFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+        mColumnCount = BakingUtils.calculateNoOfColumns(getContext());
     }
 
     @Override
@@ -48,9 +39,10 @@ public class RecipeFragment extends Fragment  {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_steps_list, container, false);
 
+        //Load JSON into list of recipe
         List<Recipe> recipes = BakingUtils.fetchRecipeData(getContext());
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-        // Set the adapter
+        // Set the adapter chose layout depending in column count
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
@@ -59,7 +51,7 @@ public class RecipeFragment extends Fragment  {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new RecipeRecyclerViewAdapter(recipes, mListener));
+            recyclerView.setAdapter(new RecipeRecyclerViewAdapter(recipes, mListener,getContext()));
         }
         return view;
     }
@@ -82,18 +74,8 @@ public class RecipeFragment extends Fragment  {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    //Fragment interface
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Recipe item);
     }
 }

@@ -12,24 +12,17 @@ import com.example.android.baking.R;
 import com.example.android.baking.data.Recipe;
 import com.example.android.baking.data.Step;
 
-/**
- * An activity representing a single Item detail screen. This
- * activity is only used narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link RecipeListActivity}.
- */
+//Activity to host either Ingredient or Step fragment
 public class RecipeDetailActivity extends AppCompatActivity
         implements RecipeStepFragment.OnChangeStepListener,
             RecipeIngredientsFragment.OnChangeIngredientsListener{
 
+
     private static final String INGREDIENTS_TAG = "ingredients_fragment";
     private static final String STEP_TAG = "step_fragment " ;
-    Recipe currentRecipe;
-    Step currentStep;
-    String mItem;
-    ActionBar actionBar;
-    RecipeStepFragment stepFragment;
-    RecipeIngredientsFragment ingredientsFragment;
+    private Recipe currentRecipe;
+    private Step currentStep;
+    private String mItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,26 +32,16 @@ public class RecipeDetailActivity extends AppCompatActivity
         Intent intent = getIntent();
         currentRecipe = intent.getExtras().getParcelable("currentRecipe");
         currentStep = intent.getExtras().getParcelable("currentStep");
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
 
             // Show the Up button in the action bar.
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
 
-
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
         if (savedInstanceState == null) {
             mItem = getIntent().getStringExtra(RecipeStepFragment.ARG_ITEM);
-            if (mItem.equals("INGREDIENTS")) {
+            if (mItem.equals(RecipeListActivity.INGREDIENTS_TITLE)) {
                 loadIngredientsFragment();
             }else {
                 loadStepFragment();
@@ -67,10 +50,9 @@ public class RecipeDetailActivity extends AppCompatActivity
 
     }
 
-
+    //fragment loaders
     private void loadIngredientsFragment(){
- //       actionBar.setTitle(mItem);
-        ingredientsFragment = new RecipeIngredientsFragment();
+        RecipeIngredientsFragment ingredientsFragment = new RecipeIngredientsFragment();
         Bundle arguments = new Bundle();
         arguments.putString(RecipeStepFragment.ARG_ITEM, mItem);
         arguments.putParcelable("currentRecipe", currentRecipe);
@@ -81,8 +63,7 @@ public class RecipeDetailActivity extends AppCompatActivity
     }
 
     private void loadStepFragment(){
-    //    actionBar.setTitle(mItem);
-        stepFragment = new RecipeStepFragment();
+        RecipeStepFragment stepFragment = new RecipeStepFragment();
         Bundle arguments = new Bundle();
         arguments.putString(RecipeStepFragment.ARG_ITEM, mItem);
         arguments.putParcelable("currentRecipe", currentRecipe);
@@ -93,10 +74,12 @@ public class RecipeDetailActivity extends AppCompatActivity
                 .commit();
     }
 
+
+    //interfaces to step or ingrediets methods
     @Override
     public void OnChangeStep(int position) {
         if(position == -1){
-            mItem = "INGREDIENTS";
+            mItem = RecipeListActivity.INGREDIENTS_TITLE;
             loadIngredientsFragment();
         }else {
             currentStep = currentRecipe.getmSteps().get(position);

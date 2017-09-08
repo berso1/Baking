@@ -24,20 +24,17 @@ implements RecipeFragment.OnListFragmentInteractionListener {
         setSupportActionBar(mainToolbar);
         mainToolbar.setTitle(R.string.app_name);
         RecipeFragment fragment = new RecipeFragment();
-
         FragmentManager fragmentManager = getSupportFragmentManager();
-
         fragmentManager.beginTransaction()
                 .add(R.id.recipe_container, fragment)
                 .commit();
 
-        mainToolbar.setTitle("");
+      //  mainToolbar.setTitle("");
     }
 
+    //Fragment interface
     @Override
     public void onListFragmentInteraction(Recipe recipe) {
-      //  Toast toast = Toast.makeText(this,""+recipe.getmId(),Toast.LENGTH_SHORT);
-       // toast.show();
         Intent intent = new Intent(this,RecipeListActivity.class);
         intent.putExtra("currentRecipe", recipe);
         startActivity(intent);
