@@ -2,16 +2,21 @@ package com.example.android.baking.UI;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +43,6 @@ import com.google.android.exoplayer2.util.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -59,11 +63,9 @@ public class RecipeStepFragment extends Fragment {
 //GLOBAL VARIABLES==================================================================================
 
     public static final String ARG_ITEM = "item_type";
-    private static final String LOG_TAG = "RecipeStepFragment";
     private OnChangeStepListener mListener;
     int position;
-    private boolean isIngredients = false;
-
+    private boolean mTwoPane;
 
     private String mItem;
     private Recipe currentRecipe;
@@ -75,10 +77,7 @@ public class RecipeStepFragment extends Fragment {
     //referece layout objects using Butteknife
     @BindView(R.id.item_detail) TextView mTextView;
     @BindView(R.id.playerView) SimpleExoPlayerView mPlayerView;
-    @BindView(R.id.next_step_button) Button mNextButton;
-    @BindView(R.id.previous_step_button) Button mPreviousButton;
-
-
+    @BindView(R.id.my_toolbar) Toolbar mToolBar;
 //CONSTRUCTOR=======================================================================================
 
     public RecipeStepFragment() {
@@ -90,11 +89,12 @@ public class RecipeStepFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-
+        //setHasOptionsMenu(true);
         if (getArguments().containsKey(ARG_ITEM)) {
             mItem = getArguments().getString(ARG_ITEM);
             currentRecipe = getArguments().getParcelable("currentRecipe");
             currentStep = getArguments().getParcelable("currentStep");
+            mTwoPane = getArguments().getBoolean("twoPane");
         }
 
     }
@@ -104,8 +104,20 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.item_detail, container, false);
+        rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
         ButterKnife.bind(this,rootView);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolBar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(!mTwoPane) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        setHasOptionsMenu(true);
+        if(mToolBar != null) {
+            mToolBar.setTitle(mItem);
+            mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
+
+        }
         return rootView;
     }
 
@@ -118,6 +130,7 @@ public class RecipeStepFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof RecipeStepFragment.OnChangeStepListener) {
             mListener = (RecipeStepFragment.OnChangeStepListener) context;
+
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -129,50 +142,42 @@ public class RecipeStepFragment extends Fragment {
         position = currentStep.getId();
         mTextView.setText(currentStep.getDescription());
         mVideoUri = Uri.parse(currentStep.getVideoUrl());
-        if(position == (currentRecipe.getmSteps().size()-1)){
-            mNextButton.setVisibility(View.GONE);
+        mItem = currentStep.getShortDescription();
+        if(mToolBar != null) {
+            mToolBar.setTitle(mItem);
+            mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
         }
     }
 
-    //Use interface method OnChangeStep to change to next fragment
-    @OnClick(R.id.next_step_button)
-    public void next_step() {
 
-        if (position == -1) {
-            position = 0;
-        }else{
-            if (position < (currentRecipe.getmSteps().size() - 1)) {
-                position++;
-                mListener.OnChangeStep(position);
-            } else {
-                Toast toast = Toast.makeText(getContext(), "No more steps", Toast.LENGTH_SHORT);
-                toast.show();
-            }
+//MENU==============================================================================================
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_detail, menu);
+        if(position == (currentRecipe.getmSteps().size() - 1)){
+            menu.getItem(1).setVisible(false);
         }
-       // Toast toast = Toast.makeText(getContext(),"currentStep "+position,Toast.LENGTH_SHORT);
-       // toast.show();
-
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
-            // Respond to a click on the "Insert dummy data" menu option
             case R.id.next_step_button:
-                if (position == -1) {
-                    position = 0;
-                }else{
                     if (position < (currentRecipe.getmSteps().size() - 1)) {
                         position++;
                         mListener.OnChangeStep(position);
                     } else {
-                        Toast toast = Toast.makeText(getContext(), "No more steps", Toast.LENGTH_SHORT);
-                        toast.show();
+                        item.setVisible(false);
+                        //Toast toast = Toast.makeText(getContext(), "No more steps", Toast.LENGTH_SHORT);
+                       // toast.show();
                     }
-                }
+
                 return true;
-            // Respond to a click on the "Delete all entries" menu option
             case R.id.previous_step_button:
                 if(position >= 0 ){
                     position--;
@@ -183,20 +188,19 @@ public class RecipeStepFragment extends Fragment {
                 }
                 mListener.OnChangeStep(position);
                 return true;
+            case android.R.id.home:
+                Intent intent = new Intent( getActivity(),RecipeListActivity.class);
+                intent.putExtra("currentRecipe",currentRecipe);
+                NavUtils.navigateUpTo(getActivity(), intent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    @OnClick(R.id.previous_step_button)
-    public void previous_step() {
-        if(position >= 0 ){
-            position--;
-        }else {
-            setStep();
-            Toast toast = Toast.makeText(getContext(),"No more steps",Toast.LENGTH_SHORT);
-            toast.show();
-        }
-        mListener.OnChangeStep(position);
-    }
+
+
+//ON ATTACH=========================================================================================
+
+
 
     @Override
     public void onStart() {

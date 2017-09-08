@@ -5,13 +5,13 @@
     <item
         android:id="@+id/previous_step_button"
         android:title="@string/previous_step"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@mipmap/ic_previous"/>
     <item
         android:id="@+id/next_step_button"
         android:enabled="true"
         android:title="@string/next_step"
         android:visible="true"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@mipmap/ic_next"/>
 </menu>

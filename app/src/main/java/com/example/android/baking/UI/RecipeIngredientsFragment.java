@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.baking.R;
 import com.example.android.baking.data.Ingredient;
@@ -20,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -45,15 +49,17 @@ public class RecipeIngredientsFragment extends Fragment {
     private OnChangeIngredientsListener mListener;
     int position;
 
+    private String mItem;
 
     private Recipe currentRecipe;
     private View rootView;
+    private boolean mTwoPane;
+
 
     //referece layout objects using Butteknife
     @BindView(R.id.item_detail) TextView mTextView;
     @BindView(R.id.playerView) SimpleExoPlayerView mPlayerView;
-    @BindView(R.id.next_step_button) Button mNextButton;
-    @BindView(R.id.previous_step_button) Button mPreviousButton;
+    @BindView(R.id.my_toolbar) Toolbar mToolBar;
 
 
 //CONSTRUCTOR=======================================================================================
@@ -68,7 +74,9 @@ public class RecipeIngredientsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         if (getArguments().containsKey(ARG_ITEM)) {
+            mItem = getArguments().getString(ARG_ITEM);
             currentRecipe = getArguments().getParcelable("currentRecipe");
+            mTwoPane = getArguments().getBoolean("twoPane");
         }
 
     }
@@ -78,8 +86,19 @@ public class RecipeIngredientsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.item_detail, container, false);
+        rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
         ButterKnife.bind(this,rootView);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolBar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(!mTwoPane) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        if(mToolBar != null) {
+            mToolBar.setTitle(mItem);
+            mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
+        }
+        setHasOptionsMenu(true);
         return rootView;
     }
 
@@ -93,10 +112,58 @@ public class RecipeIngredientsFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof RecipeIngredientsFragment.OnChangeIngredientsListener) {
             mListener = (RecipeIngredientsFragment.OnChangeIngredientsListener) context;
+            if(mToolBar != null) {
+                mToolBar.setTitle(mItem);
+                mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
+            }
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+    }
+
+//MENU==============================================================================================
+
+
+    /**
+     * Initialize the contents of the Fragment host's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.  For this method
+     * to be called, you must have first called {@link #setHasOptionsMenu}.  See
+     * {@link Activity#onCreateOptionsMenu(Menu) Activity.onCreateOptionsMenu}
+     * for more information.
+     *
+     * @param menu     The options menu in which you place your items.
+     * @param inflater
+     * @see #setHasOptionsMenu
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_detail, menu);
+        //hide the previousButton
+       // MenuItem previousButton = menu.getItem(1);
+       // previousButton.setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            // Respond to a click on the "Insert dummy data" menu option
+            case R.id.next_step_button:
+                mListener.OnChangeIngredient(0);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.previous_step_button);
+        item.setVisible(false);
     }
 
 
@@ -110,18 +177,18 @@ public class RecipeIngredientsFragment extends Fragment {
             ingredientList = ingredientList+currentIngredient.getmIngredient()+"\n";
         }
         mPlayerView.setVisibility(View.GONE);
-        mPreviousButton.setVisibility(View.GONE);
+       // mPreviousButton.setVisibility(View.GONE);
         ((TextView) rootView.findViewById(R.id.item_detail)).setText(ingredientList);
     }
 
-
+/*
     //Use interface method OnChangeStep to change to next fragment
     @OnClick(R.id.next_step_button)
     public void next_step() {
         position = 0;
         mListener.OnChangeIngredient(position);
     }
-
+*/
 
     @Override
     public void onStart() {

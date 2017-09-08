@@ -27,10 +27,10 @@
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.example.android.baking.UI.RecipeListActivity"
-        tools:listitem="@layout/item_list_content" />
+        tools:listitem="@layout/step_list_item" />
 
     <FrameLayout
-        android:id="@+id/item_detail_container"
+        android:id="@+id/recipe_detail_fragment_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3" />

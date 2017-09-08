@@ -29,7 +29,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_recipe, parent, false);
         return new ViewHolder(view);
     }
 
@@ -37,7 +37,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Recipe recipe = mRecipes.get(position);
       //  holder.mItem = mRecipes.get(position);
-        holder.mImageView.setImageResource(R.mipmap.ic_launcher_round);
+        holder.mImageView.setImageResource(R.drawable.ic_cake);
         holder.mName.setText(recipe.getmName());
         holder.mServings.setText(""+recipe.getmServings());
         holder.mView.setOnClickListener(new View.OnClickListener() {

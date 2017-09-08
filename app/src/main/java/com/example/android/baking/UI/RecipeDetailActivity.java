@@ -34,11 +34,7 @@ public class RecipeDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      //  if(getResources().getConfiguration().orientation == 2) {
-      //      requestWindowFeature(Window.FEATURE_NO_TITLE);
-       //     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-      //  }
-        setContentView(R.layout.activity_item_detail);
+        setContentView(R.layout.activity_recipe_step_detail);
 
         Intent intent = getIntent();
         currentRecipe = intent.getExtras().getParcelable("currentRecipe");
@@ -73,19 +69,19 @@ public class RecipeDetailActivity extends AppCompatActivity
 
 
     private void loadIngredientsFragment(){
-        actionBar.setTitle(mItem);
+ //       actionBar.setTitle(mItem);
         ingredientsFragment = new RecipeIngredientsFragment();
         Bundle arguments = new Bundle();
         arguments.putString(RecipeStepFragment.ARG_ITEM, mItem);
         arguments.putParcelable("currentRecipe", currentRecipe);
         ingredientsFragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.item_detail_container, ingredientsFragment, INGREDIENTS_TAG)
+                .replace(R.id.recipe_detail_fragment_container, ingredientsFragment, INGREDIENTS_TAG)
                 .commit();
     }
 
     private void loadStepFragment(){
-        actionBar.setTitle(mItem);
+    //    actionBar.setTitle(mItem);
         stepFragment = new RecipeStepFragment();
         Bundle arguments = new Bundle();
         arguments.putString(RecipeStepFragment.ARG_ITEM, mItem);
@@ -93,7 +89,7 @@ public class RecipeDetailActivity extends AppCompatActivity
         arguments.putParcelable("currentStep", currentStep);
         stepFragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.item_detail_container, stepFragment, STEP_TAG)
+                .replace(R.id.recipe_detail_fragment_container, stepFragment, STEP_TAG)
                 .commit();
     }
 
@@ -117,6 +113,7 @@ public class RecipeDetailActivity extends AppCompatActivity
 
     //MENU METHODS----------------------------------------------------------------------------------
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
@@ -136,4 +133,5 @@ public class RecipeDetailActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

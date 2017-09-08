@@ -4,4 +4,7 @@
     <string name="next_step">NEXT STEP</string>
     <string name="step">step_fragment</string>
     <string name="previous_step">PREVIOUS STEP</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_string">NO BAKING RECIPES</string>
 </resources>
