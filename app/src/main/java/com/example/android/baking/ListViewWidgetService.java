@@ -41,11 +41,11 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
-        new WidgetLoadTask().execute();
     }
 
     @Override
     public void onDataSetChanged() {
+        new WidgetLoadTask().execute();
     }
 
     @Override
@@ -78,7 +78,7 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
         extras.putString(RecipeStepFragment.ARG_ITEM, RecipeListActivity.INGREDIENTS_TITLE);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
-        views.setOnClickFillInIntent(R.id.widget_recipe, fillInIntent);
+        views.setOnClickFillInIntent(R.id.root_view, fillInIntent);
 
         return views;
     }
@@ -89,7 +89,8 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        if(mRecipes == null) return 0;
+        return mRecipes.size();
     }
 
     @Override
@@ -104,7 +105,6 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
 
     public class WidgetLoadTask extends AsyncTask<URL, Integer, List<Recipe>> {
-
         @Override
         protected List<Recipe> doInBackground(URL... urls) {
             return BakingUtils.fetchRecipeData(RecipeFragment.BAKING_DATA_URL);
@@ -114,12 +114,10 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
         protected void onPostExecute(List<Recipe> recipes) {
             super.onPostExecute(recipes);
             mRecipes = recipes;
-
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, BakingAppWidget.class));
-            //Trigger data update to handle the GridView widgets and force a data refresh
+            //Trigger data update to handle the ListView widgets and force a data refresh
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listViewWidget);
-
         }
     }
 }

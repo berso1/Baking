@@ -26,28 +26,9 @@ import java.util.List;
 public class BakingUtils {
 
     private static final String LOG_TAG = BakingUtils.class.getName();
-    private static final String URL_PRE_STRING = "http://image.tmdb.org/t/p/w185/";
 
     //empty constructor to avoid class to be instantiated
-
     private BakingUtils() {
-    }
-
-    public static List<Recipe> fetchRecipeData(String requestUrl, Context context) {
-
-        // Create URL object
-        URL url = createUrl(requestUrl);
-
-        // Perform HTTP request to the URL and receive a JSON response back
-        String jsonResponse = null;
-        try {
-            jsonResponse = makeHttpRequest(url);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error closing input stream", e);
-        }
-        // Extract relevant fields from the JSON response and create an {@link Event} object
-        // Return the {@link Event}
-        return extractFeatureFromJson(jsonResponse);
     }
 
     public static List<Recipe> fetchRecipeData(String requestUrl) {
@@ -78,31 +59,7 @@ public class BakingUtils {
         }
         return url;
     }
-    /*
-    //Read recipes.json file from assets folder return a List of recipe
-    public static List<Recipe> fetchRecipeData(Context context) {
-        String jsonResponse;
-        jsonResponse = readRecipesFromJson(context);
-        return extractFeatureFromJson(jsonResponse,context);
-    }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static String readRecipesFromJson(Context context) {
-        String json;
-        try {
-            InputStream is = context.getAssets().open("recipes.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-*/
     private static List<Recipe> extractFeatureFromJson(String recipeJson) {
         // If the JSON string is empty or null, then return early.
         if (TextUtils.isEmpty(recipeJson)) {
@@ -131,7 +88,6 @@ public class BakingUtils {
         }
         return null;
     }
-
 
     private static List<Ingredient> getIngredientList(JSONArray array) throws JSONException {
         if(array==null) return null;

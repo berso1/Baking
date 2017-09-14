@@ -12,15 +12,11 @@ import java.util.List;
 
 public class BakingLoader extends AsyncTaskLoader<List<Recipe>> {
 
-    private static final String LOG_TAG = BakingLoader.class.getName();
-
     private final String mUrl;
-    private final Context mContext;
 
     public BakingLoader(Context context, String Url) {
         super(context);
         mUrl = Url;
-        mContext = context;
     }
 
     @Override
@@ -33,6 +29,6 @@ public class BakingLoader extends AsyncTaskLoader<List<Recipe>> {
         if (mUrl == null) {
             return null;
         }
-        return BakingUtils.fetchRecipeData(mUrl,mContext);
+        return BakingUtils.fetchRecipeData(mUrl);
     }
 }
