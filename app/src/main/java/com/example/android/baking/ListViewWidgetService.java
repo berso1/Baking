@@ -89,8 +89,7 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getViewTypeCount() {
-        if(mRecipes == null) return 0;
-        return mRecipes.size();
+        return 1;
     }
 
     @Override
