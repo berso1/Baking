@@ -1,4 +1,4 @@
-package com.example.android.baking.UI;
+package com.example.android.baking.ui;
 
 import android.content.Intent;
 import android.os.Bundle;

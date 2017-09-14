@@ -1,4 +1,4 @@
-package com.example.android.baking.UI;
+package com.example.android.baking.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 //RecyclerViewAdapter for a List of Recipe
 public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Recipe> mRecipes;
+    private List<Recipe> mRecipes;
     private final RecipeFragment.OnListFragmentInteractionListener mListener;
     private Context mContext;
 
@@ -73,8 +73,13 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         return mRecipes.size();
     }
 
+    public void swapData(List<Recipe> recipes) {
+        mRecipes = recipes;
+        notifyDataSetChanged();
+    }
+    
 
-//VIEW HOLDER ======================================================================================
+    //VIEW HOLDER ======================================================================================
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.card_view) View mView;
         @BindView(R.id.recipe_image) ImageView mImageView;

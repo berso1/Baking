@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/root_view">
 
     <ImageView
         android:id="@+id/widget_image"
         android:contentDescription="@string/widget_list_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_cake"
         android:background="@android:color/background_light"/>
 
     <TextView
         android:id="@+id/widget_recipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:text="@string/add_widget"
         android:textColor="@android:color/black"
         android:textSize="@dimen/widget_text_size"
         android:gravity="center_vertical"
