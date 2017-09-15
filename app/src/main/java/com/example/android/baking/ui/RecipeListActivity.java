@@ -1,7 +1,10 @@
 package com.example.android.baking.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.baking.BakingAppWidget;
 import com.example.android.baking.R;
 import com.example.android.baking.data.Ingredient;
 import com.example.android.baking.data.Recipe;
@@ -76,6 +80,17 @@ public class RecipeListActivity extends AppCompatActivity
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.app",
+                                              Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("currentRecipe",currentRecipe.getmName()).apply();
+        sharedPreferences.edit().putInt("recipe_id",currentRecipe.getmId()).apply();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
+        Intent intent = new Intent(this,BakingAppWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,appWidgetIds);
+        sendBroadcast(intent);
     }
 
 

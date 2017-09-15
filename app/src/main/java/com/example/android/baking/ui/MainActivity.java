@@ -28,8 +28,6 @@ implements RecipeFragment.OnListFragmentInteractionListener {
         fragmentManager.beginTransaction()
                 .add(R.id.recipe_container, fragment)
                 .commit();
-
-      //  mainToolbar.setTitle("");
     }
 
     //Fragment interface
@@ -39,4 +37,5 @@ implements RecipeFragment.OnListFragmentInteractionListener {
         intent.putExtra("currentRecipe", recipe);
         startActivity(intent);
     }
+
 }

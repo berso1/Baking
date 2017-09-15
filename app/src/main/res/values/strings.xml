@@ -14,4 +14,5 @@
     <string name="widget_list_image">widget_list_image</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="configure">Configure</string>
+    <string name="action_settings">Widget Settings</string>
 </resources>

@@ -4,18 +4,19 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.android.baking.data.BakingUtils;
+import com.example.android.baking.data.Ingredient;
 import com.example.android.baking.data.Recipe;
 import com.example.android.baking.ui.RecipeFragment;
-import com.example.android.baking.ui.RecipeListActivity;
-import com.example.android.baking.ui.RecipeStepFragment;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
     Context mContext;
     List<Recipe> mRecipes;
+    Recipe mCurrentRecipe;
+    List<String> mIngredients;
 
     public ListRemoteViewsFactory(Context applicationContext) {
         mContext = applicationContext;
@@ -41,11 +44,11 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
+        new WidgetLoadTask().execute();
     }
 
     @Override
     public void onDataSetChanged() {
-        new WidgetLoadTask().execute();
     }
 
     @Override
@@ -55,30 +58,22 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        if(mRecipes == null || mRecipes.size() == 0 )return 0;
-        return mRecipes.size();
+        if(mIngredients == null || mIngredients.size() == 0 )return 0;
+        return mIngredients.size();
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        if (mRecipes == null || mRecipes.size() == 0) return null;
+        if (mIngredients == null || mIngredients.size() == 0) return null;
 
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_view_item);
-        Recipe recipe = mRecipes.get(position);
+        views.setTextViewText(R.id.widget_recipe, mIngredients.get(position));
 
-        String name = recipe.getmName();
-        // Update the recipe name
-        views.setImageViewResource(R.id.widget_image,R.drawable.ic_cake);
-        views.setTextViewText(R.id.widget_recipe, name);
-
-        // Fill in the onClick PendingIntent Template using the specific plant Id for each item individually
         Bundle extras = new Bundle();
-        extras.putParcelable("currentRecipe", recipe);
-        extras.putParcelable("currentStep",recipe.getmSteps().get(0));
-        extras.putString(RecipeStepFragment.ARG_ITEM, RecipeListActivity.INGREDIENTS_TITLE);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
         views.setOnClickFillInIntent(R.id.root_view, fillInIntent);
+
 
         return views;
     }
@@ -93,8 +88,8 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -103,20 +98,41 @@ class ListRemoteViewsFactory  implements RemoteViewsService.RemoteViewsFactory {
     }
 
 
-    public class WidgetLoadTask extends AsyncTask<URL, Integer, List<Recipe>> {
+    public class WidgetLoadTask extends AsyncTask<URL, Integer, List<Ingredient>> {
+        List<Ingredient> ingredients;
         @Override
-        protected List<Recipe> doInBackground(URL... urls) {
-            return BakingUtils.fetchRecipeData(RecipeFragment.BAKING_DATA_URL);
+        protected List<Ingredient> doInBackground(URL... urls) {
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences("com.example.app",
+                    Context.MODE_PRIVATE);
+            String recipeName = sharedPreferences.getString("currentRecipe","");
+            int id = sharedPreferences.getInt("recipe_id",0);
+            int position = id - 1;
+            ingredients = BakingUtils.fetchIngredientData(RecipeFragment.BAKING_DATA_URL,position);
+            return ingredients;
         }
 
         @Override
-        protected void onPostExecute(List<Recipe> recipes) {
-            super.onPostExecute(recipes);
-            mRecipes = recipes;
+        protected void onPostExecute(List<Ingredient> ingredients) {
+            super.onPostExecute(ingredients);
+            mIngredients = getIngredients(ingredients);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, BakingAppWidget.class));
             //Trigger data update to handle the ListView widgets and force a data refresh
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listViewWidget);
+        }
+
+
+        private List<String> getIngredients(List<Ingredient> recipeIngredients){
+            List<String> ingredientList = new ArrayList<>();
+            if(recipeIngredients == null) return null;
+            for (int j = 0; j < recipeIngredients.size();j++){
+                Ingredient currentIngredient = recipeIngredients.get(j);
+                String formedIngredient = currentIngredient.getmIngredient() +": "+
+                        currentIngredient.getmQuantity()+" "+
+                        currentIngredient.getmMeasure();
+                ingredientList.add(formedIngredient);
+            }
+            return ingredientList;
         }
     }
 }

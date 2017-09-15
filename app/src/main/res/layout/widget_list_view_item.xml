@@ -4,23 +4,15 @@
     android:layout_height="match_parent"
     android:id="@+id/root_view">
 
-    <ImageView
-        android:id="@+id/widget_image"
-        android:contentDescription="@string/widget_list_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_cake"
-        android:background="@android:color/background_light"/>
-
     <TextView
         android:id="@+id/widget_recipe"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/widget_width"
+        android:layout_height="wrap_content"
         android:text="@string/add_widget"
         android:textColor="@android:color/black"
         android:textSize="@dimen/widget_text_size"
-        android:gravity="center_vertical"
-        android:background="@android:color/background_light"
-        android:paddingLeft="@dimen/widget_left_padding"/>
-
+        android:layout_gravity="start"
+        android:background="@color/widget_bg_color"
+        android:paddingLeft="@dimen/list_view_padding"
+        android:paddingRight="@dimen/list_view_padding"/>
 </LinearLayout>

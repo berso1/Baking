@@ -67,6 +67,7 @@ public class RecipeStepFragment extends Fragment {
     private Step currentStep;
     private SimpleExoPlayer mExoPlayer;
     private Uri mVideoUri;
+    private long mPlayerPosition;
 
     //reference layout objects using Butteknife
     @BindView(R.id.item_detail) TextView mTextView;
@@ -87,6 +88,7 @@ public class RecipeStepFragment extends Fragment {
             currentRecipe = getArguments().getParcelable("currentRecipe");
             currentStep = getArguments().getParcelable("currentStep");
             mTwoPane = getArguments().getBoolean("twoPane");
+            mPlayerPosition = getArguments().getLong("PlayerPosition");
         }
     }
 
@@ -215,8 +217,8 @@ public class RecipeStepFragment extends Fragment {
             MediaSource videoSource = new ExtractorMediaSource(mediaUri,
                     dataSourceFactory, extractor, null, null);
             mExoPlayer.prepare(videoSource);
-
             mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.seekTo(mPlayerPosition);
         }else{
             mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
                     (getResources(), R.drawable.exo_controls_play));
@@ -225,10 +227,17 @@ public class RecipeStepFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putLong("PlayerPosition", mPlayerPosition);
+    }
+
     // Release ExoPlayer.
 
     private void releasePlayer() {
         if(mExoPlayer != null) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -241,11 +250,43 @@ public class RecipeStepFragment extends Fragment {
         super.onDestroy();
         releasePlayer();
     }
-
+/*
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+*/
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (mExoPlayer!=null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mExoPlayer!=null) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer=null;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
     }
 }
 

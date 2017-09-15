@@ -6,8 +6,8 @@
     android:name="com.example.android.test.ItemListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="@dimen/recycler_view_margin"
+    android:layout_marginRight="@dimen/recycler_view_margin"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.example.android.baking.ui.RecipeListActivity"
     tools:listitem="@layout/step_list_item" />

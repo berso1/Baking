@@ -48,6 +48,22 @@ public class BakingUtils {
         return extractFeatureFromJson(jsonResponse);
     }
 
+    public static List<Ingredient> fetchIngredientData(String requestUrl,int position) {
+
+        // Create URL object
+        URL url = createUrl(requestUrl);
+
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error closing input stream", e);
+        }
+        // Extract relevant fields from the JSON response and create an {@link Event} object
+        // Return the {@link Event}
+        return extractIngredientsFromJson(jsonResponse,position);
+    }
 
     private static URL createUrl(String stringUrl) {
         URL url;
@@ -88,6 +104,24 @@ public class BakingUtils {
         }
         return null;
     }
+
+
+    private static List<Ingredient> extractIngredientsFromJson(String recipeJson,int position) {
+        // If the JSON string is empty or null, then return early.
+        if (TextUtils.isEmpty(recipeJson)) {
+            return null;
+        }
+        List<Ingredient> ingredients = new ArrayList<>();
+        try {
+            JSONArray results = new JSONArray(recipeJson);
+            JSONObject thisRecipe = results.getJSONObject(position);
+            return getIngredientList(thisRecipe.getJSONArray("ingredients"));
+        } catch (JSONException e) {
+            Log.v(LOG_TAG," extractFeatureFromJson "+e.toString());
+        }
+        return null;
+    }
+
 
     private static List<Ingredient> getIngredientList(JSONArray array) throws JSONException {
         if(array==null) return null;

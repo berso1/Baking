@@ -2,6 +2,8 @@ package com.example.android.baking.ui;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -9,6 +11,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,7 @@ public class RecipeFragment extends Fragment implements LoaderManager.LoaderCall
 
     public static final int MOVIE_LOADER_ID = 1;
     public static final String BAKING_DATA_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+    private static final String LOGTAG = "RecipeFragment";
     private int mColumnCount;
     private OnListFragmentInteractionListener mListener;
     private Context mContext;
@@ -72,18 +76,6 @@ public class RecipeFragment extends Fragment implements LoaderManager.LoaderCall
         }
         recyclerView.setAdapter(mAdapter);
 
-
-        loaderManager = getLoaderManager();
-        // Check for savedInstanceState key movies, to avoid re load data from internet
-        if (savedInstanceState == null || !savedInstanceState.containsKey("recipes")) {
-            loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
-            mLoadingIndicator.setVisibility(View.GONE);
-        } else {
-            recipes = savedInstanceState.getParcelableArrayList("movies");
-            mAdapter.swapData(recipes);
-            mLoadingIndicator.setVisibility(View.GONE);
-        }
-/*
         //Check for connectivity
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -92,10 +84,20 @@ public class RecipeFragment extends Fragment implements LoaderManager.LoaderCall
         isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
         if (!isConnected) {
-         //   mLoadingIndicator.setVisibility(View.GONE);
-        //    mEmptyStateTextView.setText(R.string.no_connection);
+               mLoadingIndicator.setVisibility(View.GONE);
+               mEmptyStateTextView.setText(R.string.no_connection);
+        }else {
+            loaderManager = getLoaderManager();
         }
-*/
+        // Check for savedInstanceState key recipes, to avoid re load data from internet
+        if (savedInstanceState == null || !savedInstanceState.containsKey("recipes")) {
+            loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
+            mLoadingIndicator.setVisibility(View.GONE);
+        } else {
+            recipes = savedInstanceState.getParcelableArrayList("recipes");
+            mAdapter.swapData(recipes);
+            mLoadingIndicator.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -124,7 +126,11 @@ public class RecipeFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
-        mAdapter.swapData(data);
+        if(data != null) {
+            mAdapter.swapData(data);
+        }else{
+            Log.v(LOGTAG,"No data....");
+        }
     }
 
     @Override
