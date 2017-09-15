@@ -55,7 +55,7 @@ public class RecipeIngredientsFragment extends Fragment {
 
 
 //CONSTRUCTOR=======================================================================================
-
+    // Mandatory empty constructor for the fragment manager to instantiate the
     public RecipeIngredientsFragment() {
     }
 
@@ -113,7 +113,6 @@ public class RecipeIngredientsFragment extends Fragment {
         //hide exoplayer
         mPlayerView.setVisibility(View.GONE);
     }
-
 
 //MENU==============================================================================================
 

@@ -11,12 +11,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.baking.R;
 import com.example.android.baking.data.BakingUtils;
@@ -129,7 +129,8 @@ public class RecipeFragment extends Fragment implements LoaderManager.LoaderCall
         if(data != null) {
             mAdapter.swapData(data);
         }else{
-            Log.v(LOGTAG,"No data....");
+            Toast toast = Toast.makeText(getContext(),"No data....",Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 

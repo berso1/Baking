@@ -74,7 +74,7 @@ public class RecipeStepFragment extends Fragment {
     @BindView(R.id.playerView) SimpleExoPlayerView mPlayerView;
     @BindView(R.id.my_toolbar) Toolbar mToolBar;
 //CONSTRUCTOR=======================================================================================
-
+    // Mandatory empty constructor for the fragment manager to instantiate the
     public RecipeStepFragment() {
     }
 
@@ -89,6 +89,10 @@ public class RecipeStepFragment extends Fragment {
             currentStep = getArguments().getParcelable("currentStep");
             mTwoPane = getArguments().getBoolean("twoPane");
             mPlayerPosition = getArguments().getLong("PlayerPosition");
+        }
+
+        if(savedInstanceState!=null){
+            mPlayerPosition = savedInstanceState.getLong("PlayerPosition");
         }
     }
 
@@ -250,13 +254,7 @@ public class RecipeStepFragment extends Fragment {
         super.onDestroy();
         releasePlayer();
     }
-/*
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-*/
+
     @Override
     public void onDetach() {
         super.onDetach();
