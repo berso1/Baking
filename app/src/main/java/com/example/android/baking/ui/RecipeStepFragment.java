@@ -103,21 +103,24 @@ public class RecipeStepFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
         ButterKnife.bind(this, rootView);
-        try {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolBar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-            if (!mTwoPane) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            try {
+                ((AppCompatActivity) getActivity()).setSupportActionBar(mToolBar);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+                if (!mTwoPane) {
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }else{
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                }
+            } catch (NullPointerException e) {
+                Log.v(LOGTAG, "Action bar error");
             }
-        }catch(NullPointerException e){
-            Log.v(LOGTAG,"Action bar error");
-        }
-        setHasOptionsMenu(true);
-        if(mToolBar != null) {
-            mToolBar.setTitle(mItem);
-            mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
-        }
+            setHasOptionsMenu(true);
+            if (mToolBar != null) {
+                mToolBar.setTitle(mItem);
+                mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));
+            }
+
         return rootView;
     }
 

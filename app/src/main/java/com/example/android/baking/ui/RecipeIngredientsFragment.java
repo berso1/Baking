@@ -79,14 +79,16 @@ public class RecipeIngredientsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.recipe_step_detail, container, false);
-        ButterKnife.bind(this,rootView);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolBar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if(!mTwoPane) {
+        ButterKnife.bind(this, rootView);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolBar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (!mTwoPane) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        } else {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         }
-        if(mToolBar != null) {
+        if (mToolBar != null) {
             mToolBar.setTitle(mItem);
             //noinspection deprecation
             mToolBar.setTitleTextColor(getResources().getColor(R.color.title_bar_text_color));

@@ -88,15 +88,15 @@ public class RecipeFragment extends Fragment implements LoaderManager.LoaderCall
                mEmptyStateTextView.setText(R.string.no_connection);
         }else {
             loaderManager = getLoaderManager();
-        }
-        // Check for savedInstanceState key recipes, to avoid re load data from internet
-        if (savedInstanceState == null || !savedInstanceState.containsKey("recipes")) {
-            loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
-            mLoadingIndicator.setVisibility(View.GONE);
-        } else {
-            recipes = savedInstanceState.getParcelableArrayList("recipes");
-            mAdapter.swapData(recipes);
-            mLoadingIndicator.setVisibility(View.GONE);
+            // Check for savedInstanceState key recipes, to avoid re load data from internet
+            if (savedInstanceState == null || !savedInstanceState.containsKey("recipes")) {
+                loaderManager.initLoader(MOVIE_LOADER_ID, null, this);
+                mLoadingIndicator.setVisibility(View.GONE);
+            } else {
+                recipes = savedInstanceState.getParcelableArrayList("recipes");
+                mAdapter.swapData(recipes);
+                mLoadingIndicator.setVisibility(View.GONE);
+            }
         }
         return view;
     }
